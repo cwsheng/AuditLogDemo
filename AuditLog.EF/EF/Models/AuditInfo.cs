@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AuditLogDemo.Models
 {
+    [Table("AuditInfos")]
     public class AuditInfo
     {
-
         [Key]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// 调用参数
@@ -26,7 +23,7 @@ namespace AuditLogDemo.Models
         /// </summary>
         public string ClientName { get; set; }
         /// <summary>
-        /// 客户端IP地址
+        /// 客户端IP地址 
         /// </summary>
         public string ClientIpAddress { get; set; }
         /// <summary>
@@ -44,7 +41,7 @@ namespace AuditLogDemo.Models
         /// <summary>
         /// 异常对象
         /// </summary>
-        public Exception Exception { get; set; }
+        public string Exception { get; set; }
         /// <summary>
         /// 方法名
         /// </summary>

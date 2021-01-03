@@ -32,11 +32,11 @@ namespace AuditLogDemo.Fliters
 
         public AuditLogActionFilter(
             IAuditLogService auditLogService,
-            ISession Session,
+            //ISession Session,
             ILogger<AuditLogActionFilter> logger
             )
         {
-            _Session = Session;
+            //_Session = Session;
             _logger = logger;
             _auditLogService = auditLogService;
         }
@@ -68,7 +68,7 @@ namespace AuditLogDemo.Fliters
                 BrowserInfo = context.HttpContext.Request.Headers["User-Agent"].ToString().TruncateWithPostfix(EntityDefault.FieldsLength250),
                 ClientIpAddress = context.HttpContext.Connection.RemoteIpAddress.ToString().TruncateWithPostfix(EntityDefault.FieldsLength50),
                 //ClientName = _clientInfoProvider.ComputerName.TruncateWithPostfix(EntityDefault.FieldsLength100),
-                Id = Guid.NewGuid().ToString()
+                Id = Guid.NewGuid()
             };
 
             ActionExecutedContext result = null;
@@ -77,12 +77,12 @@ namespace AuditLogDemo.Fliters
                 result = await next();
                 if (result.Exception != null && !result.ExceptionHandled)
                 {
-                    auditInfo.Exception = result.Exception;
+                    auditInfo.Exception = result.Exception.ToString();
                 }
             }
             catch (Exception ex)
             {
-                auditInfo.Exception = ex;
+                auditInfo.Exception = ex.ToString();
                 throw;
             }
             finally
