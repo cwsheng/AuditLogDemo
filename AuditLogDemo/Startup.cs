@@ -25,6 +25,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using LogDashboard;
 
 namespace AuditLogDemo
 {
@@ -54,6 +55,10 @@ namespace AuditLogDemo
                 });
             });
 
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "wwwroot/dist";
+            });
             //services.AddAutoMapper();
             //依赖注入
             //Scoped：一个请求创建一个
@@ -118,6 +123,8 @@ namespace AuditLogDemo
                 };
             });
 
+            services.AddLogDashboard();
+
             services.AddControllers(options =>
             {
                 //options.Filters.Add(typeof(AuditLogActionFilter));
@@ -136,9 +143,13 @@ namespace AuditLogDemo
             //autofac 新增 可选
             this.AutofacContainer = app.ApplicationServices.GetAutofacRoot();
 
+            app.UseStaticFiles();
+
+
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
+            app.UseLogDashboard();
 
             //启用中间件服务生成Swagger作为JSON终结点
             app.UseSwagger();
@@ -148,11 +159,17 @@ namespace AuditLogDemo
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuditLogDemo API V1");
             });
 
+            app.UseSpaStaticFiles();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
             });
 
+            app.UseSpa(configuration =>
+            {
+            });
         }
 
 

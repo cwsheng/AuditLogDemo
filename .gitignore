@@ -6,3 +6,5 @@
 /AuditLog.Application/bin/Debug/netcoreapp3.1
 /AuditLog.EF/bin/Debug/netcoreapp3.1
 /AuditLog.EF/obj
+/LogDashboardDemo/bin/Debug/netcoreapp3.1
+/LogDashboardDemo/obj
