@@ -9,7 +9,7 @@ namespace AuditLogDemo.EF
 {
     public class AuditLogDBContent : DbContext
     {
-        public AuditLogDBContent([NotNullAttribute] DbContextOptions options) : base(options)
+        public AuditLogDBContent([NotNull] DbContextOptions options) : base(options)
         {
         }
 

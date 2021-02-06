@@ -7,8 +7,9 @@ namespace AuditLogDemo.Models
     [Table("AuditInfos")]
     public class AuditInfo
     {
-        [Key]
-        public Guid Id { get; set; }
+        [Key] //主键 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]  //设置自增
+        public int Id { get; set; }
 
         /// <summary>
         /// 调用参数

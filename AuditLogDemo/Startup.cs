@@ -26,6 +26,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using LogDashboard;
+using System.Reflection;
+using StackExchange.Profiling.Storage;
 
 namespace AuditLogDemo
 {
@@ -123,11 +125,40 @@ namespace AuditLogDemo
                 };
             });
 
+            services.AddMiniProfiler(options =>
+            {
+                //访问地址路由根目录；默认为：/mini-profiler-resources
+                options.RouteBasePath = "/profiler";
+                //数据缓存时间
+                (options.Storage as MemoryCacheStorage).CacheDuration = TimeSpan.FromMinutes(60);
+                //sql格式化设置
+                options.SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter();
+                //跟踪连接打开关闭
+                options.TrackConnectionOpenClose = true;
+                //界面主题颜色方案;默认浅色
+                options.ColorScheme = StackExchange.Profiling.ColorScheme.Dark;
+                //.net core 3.0以上：对MVC过滤器进行分析
+                options.EnableMvcFilterProfiling = true;
+                //对视图进行分析
+                options.EnableMvcViewProfiling = true;
+
+                //控制访问页面授权，默认所有人都能访问
+                //options.ResultsAuthorize;
+                //要控制分析哪些请求，默认说有请求都分析
+                //options.ShouldProfile;
+
+                //内部异常处理
+                //options.OnInternalError = e => MyExceptionLogger(e);
+            })
+            // AddEntityFramework是要监控EntityFrameworkCore生成的SQL
+            .AddEntityFramework();
+
+
             services.AddLogDashboard();
 
             services.AddControllers(options =>
             {
-                //options.Filters.Add(typeof(AuditLogActionFilter));
+                options.Filters.Add(typeof(AuditLogActionFilter));
             });
 
         }
@@ -145,7 +176,6 @@ namespace AuditLogDemo
 
             app.UseStaticFiles();
 
-
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
@@ -154,12 +184,17 @@ namespace AuditLogDemo
             //启用中间件服务生成Swagger作为JSON终结点
             app.UseSwagger();
             //启用中间件服务对swagger-ui，指定Swagger JSON终结点
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuditLogDemo API V1");
-            });
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuditLogDemo API V1");
+    c.IndexStream = () => GetType().GetTypeInfo().Assembly.GetManifestResourceStream("AuditLogDemo.wwwroot.index.html");
+});
 
             app.UseSpaStaticFiles();
+
+            //该方法必须在app.UseMvc以前
+            app.UseMiniProfiler();
+
 
             app.UseEndpoints(endpoints =>
             {

@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuditLog.EF", "..\AuditLog.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuditLog.Application", "..\AuditLog.Application\AuditLog.Application.csproj", "{870A716D-83CD-4C93-8A20-A277E50D0F4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogDashboardDemo", "..\LogDashboardDemo\LogDashboardDemo.csproj", "{C050CD31-8454-44F1-A512-1D041185571F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogDashboardDemo", "..\LogDashboardDemo\LogDashboardDemo.csproj", "{C050CD31-8454-44F1-A512-1D041185571F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcMiniProfiler", "..\MvcMiniProfiler\MvcMiniProfiler.csproj", "{72C0A355-FB6A-4B5F-A664-AF1A93E25336}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{C050CD31-8454-44F1-A512-1D041185571F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C050CD31-8454-44F1-A512-1D041185571F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C050CD31-8454-44F1-A512-1D041185571F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72C0A355-FB6A-4B5F-A664-AF1A93E25336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72C0A355-FB6A-4B5F-A664-AF1A93E25336}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72C0A355-FB6A-4B5F-A664-AF1A93E25336}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72C0A355-FB6A-4B5F-A664-AF1A93E25336}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -20,5 +20,15 @@ namespace AuditLogDemo.Services
         {
             _repository.Save(auditInfo);
         }
+
+        public IEnumerable<AuditInfo> GetAll()
+        {
+            return _repository.GetAll();
+        }
+
+        public AuditInfo Get(int key)
+        {
+            return _repository.Get(key);
+        }
     }
 }

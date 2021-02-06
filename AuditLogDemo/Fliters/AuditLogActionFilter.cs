@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using StackExchange.Profiling;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -68,7 +69,6 @@ namespace AuditLogDemo.Fliters
                 BrowserInfo = context.HttpContext.Request.Headers["User-Agent"].ToString().TruncateWithPostfix(EntityDefault.FieldsLength250),
                 ClientIpAddress = context.HttpContext.Connection.RemoteIpAddress.ToString().TruncateWithPostfix(EntityDefault.FieldsLength50),
                 //ClientName = _clientInfoProvider.ComputerName.TruncateWithPostfix(EntityDefault.FieldsLength100),
-                Id = Guid.NewGuid()
             };
 
             ActionExecutedContext result = null;
@@ -108,8 +108,12 @@ namespace AuditLogDemo.Fliters
                     }
                 }
                 Console.WriteLine(auditInfo.ToString());
-                //保存审计日志
-                await _auditLogService.SaveAsync(auditInfo);
+                var miniPro = MiniProfiler.Current;
+                using (miniPro.Step("Add AuditLog"))
+                {
+                    //保存审计日志
+                    await _auditLogService.SaveAsync(auditInfo);
+                }
             }
         }
 
@@ -134,10 +138,6 @@ namespace AuditLogDemo.Fliters
                 return false;
             }
 
-            if (methodInfo.GetCustomAttribute<AuditedAttribute>() != null)
-            {
-                return true;
-            }
 
             if (methodInfo.GetCustomAttribute<DisableAuditingAttribute>() != null)
             {
@@ -149,15 +149,10 @@ namespace AuditLogDemo.Fliters
             {
                 if (classType.GetTypeInfo().GetCustomAttribute<AuditedAttribute>() != null)
                 {
-                    return true;
-                }
-
-                if (classType.GetTypeInfo().GetCustomAttribute<AuditedAttribute>() != null)
-                {
                     return false;
                 }
             }
-            return false;
+            return true;
         }
     }
 }

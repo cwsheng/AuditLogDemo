@@ -1,6 +1,7 @@
 ﻿using AuditLogDemo.Fliters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using StackExchange.Profiling;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +43,17 @@ namespace AuditLogDemo.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+        /// <summary>
+        /// 获取html片段
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetHtml")]
+        public IActionResult GetHtml()
+        {
+            var html = MiniProfiler.Current.RenderIncludes(HttpContext);
+            return Ok(html.Value);
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AuditLogDemo.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Profiling;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,18 +16,24 @@ namespace AuditLogDemo.Controllers
     [ApiController]
     public class AuditLogController : ControllerBase
     {
+        IAuditLogService _auditLogService;
+        public AuditLogController(IAuditLogService auditLogService)
+        {
+            _auditLogService = auditLogService;
+        }
         // GET: api/<AuditLogController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Models.AuditInfo> Get()
         {
-            return new string[] { "value1", "value2" };
+            return _auditLogService.GetAll();
+            //return new string[] { "value1", "value2" };
         }
 
         // GET api/<AuditLogController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public Models.AuditInfo Get(int id)
         {
-            return "value";
+            return _auditLogService.Get(id);
         }
 
         // POST api/<AuditLogController>
@@ -45,5 +53,7 @@ namespace AuditLogDemo.Controllers
         public void Delete(int id)
         {
         }
+
+        
     }
 }

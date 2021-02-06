@@ -3,6 +3,7 @@ using AuditLogDemo.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace AuditLog.EF
 {
@@ -19,6 +20,16 @@ namespace AuditLog.EF
             var retEntity = _auditLogDB.AuditInfos.Add(entity);
             _auditLogDB.SaveChanges();
             return retEntity.Entity;
+        }
+
+        public IEnumerable<AuditInfo> GetAll()
+        {
+            return _auditLogDB.AuditInfos.AsQueryable().AsEnumerable();
+        }
+
+        public AuditInfo Get(int key)
+        {
+            return _auditLogDB.AuditInfos.Find(key);
         }
     }
 }

@@ -9,5 +9,7 @@ namespace AuditLogDemo.Services
     public interface IAuditLogService
     {
         Task SaveAsync(AuditInfo auditInfo);
+        IEnumerable<AuditInfo> GetAll();
+        AuditInfo Get(int key);
     }
 }
