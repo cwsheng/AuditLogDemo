@@ -1,4 +1,6 @@
 ﻿using AuditLogDemo.Fliters;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using StackExchange.Profiling;
@@ -12,6 +14,7 @@ namespace AuditLogDemo.Controllers
     [ApiController]
     [Route("[controller]")]
     [Audited]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]

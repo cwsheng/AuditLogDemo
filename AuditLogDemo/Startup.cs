@@ -57,10 +57,10 @@ namespace AuditLogDemo
                 });
             });
 
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "wwwroot/dist";
-            });
+            //services.AddSpaStaticFiles(configuration =>
+            //{
+            //    configuration.RootPath = "wwwroot/dist";
+            //});
             //services.AddAutoMapper();
             //依赖注入
             //Scoped：一个请求创建一个
@@ -103,27 +103,33 @@ namespace AuditLogDemo
                 #endregion
             });
 
+
+            services.AddTransient<CustomerAuthenticationHandler>();
+
             services.Configure<JwtSetting>(Configuration.GetSection("JWTSetting"));
             var token = Configuration.GetSection("JWTSetting").Get<JwtSetting>();
             //JWT认证
             services.AddAuthentication(x =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(token.SecretKey)),
-                    ValidIssuer = token.Issuer,
-                    ValidAudience = token.Audience,
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
+                x.DefaultAuthenticateScheme = MultAuthenticationHandler.MultAuthName;
+                x.DefaultChallengeScheme = MultAuthenticationHandler.MultAuthName;
+                x.AddScheme<MultAuthenticationHandler>(MultAuthenticationHandler.MultAuthName, MultAuthenticationHandler.MultAuthName);
+                x.AddScheme<CustomerAuthenticationHandler>(CustomerAuthenticationHandler.CustomerSchemeName, CustomerAuthenticationHandler.CustomerSchemeName);
             });
+            //.AddJwtBearer(x =>
+            //{
+            //    x.RequireHttpsMetadata = false;
+            //    x.SaveToken = true;
+            //    x.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateIssuerSigningKey = true,
+            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(token.SecretKey)),
+            //        ValidIssuer = token.Issuer,
+            //        ValidAudience = token.Audience,
+            //        ValidateIssuer = false,
+            //        ValidateAudience = false
+            //    };
+            //});
 
             services.AddMiniProfiler(options =>
             {
@@ -159,6 +165,7 @@ namespace AuditLogDemo
             services.AddControllers(options =>
             {
                 options.Filters.Add(typeof(AuditLogActionFilter));
+                options.Filters.Add(typeof(ApiRequestTimeFilterAttribute));
             });
 
         }
@@ -176,21 +183,22 @@ namespace AuditLogDemo
 
             app.UseStaticFiles();
 
-            app.UseAuthentication();
             app.UseRouting();
+
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseLogDashboard();
 
             //启用中间件服务生成Swagger作为JSON终结点
             app.UseSwagger();
             //启用中间件服务对swagger-ui，指定Swagger JSON终结点
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuditLogDemo API V1");
-    c.IndexStream = () => GetType().GetTypeInfo().Assembly.GetManifestResourceStream("AuditLogDemo.wwwroot.index.html");
-});
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuditLogDemo API V1");
+                c.IndexStream = () => GetType().GetTypeInfo().Assembly.GetManifestResourceStream("AuditLogDemo.wwwroot.index.html");
+            });
 
-            app.UseSpaStaticFiles();
+            //app.UseSpaStaticFiles();
 
             //该方法必须在app.UseMvc以前
             app.UseMiniProfiler();
@@ -202,9 +210,9 @@ app.UseSwaggerUI(c =>
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action=Index}/{id?}");
             });
 
-            app.UseSpa(configuration =>
-            {
-            });
+            //app.UseSpa(configuration =>
+            //{
+            //});
         }
 
 

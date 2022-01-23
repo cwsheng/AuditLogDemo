@@ -1,4 +1,6 @@
-﻿using AuditLogDemo.Services;
+﻿using AuditLogDemo.Authentication;
+using AuditLogDemo.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StackExchange.Profiling;
@@ -11,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace AuditLogDemo.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = CustomerAuthenticationHandler.CustomerSchemeName)]
     [Route("api/[controller]")]
     [ApiController]
     public class AuditLogController : ControllerBase
@@ -54,6 +56,6 @@ namespace AuditLogDemo.Controllers
         {
         }
 
-        
+
     }
 }
